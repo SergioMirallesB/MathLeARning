@@ -115,3 +115,4 @@ InitTestScene*.unity*
 
 # Vuforia: se instala por separado en cada ordenador
 /Packages/com.ptc.vuforia.engine-11.4.4.tgz
+/Assets/Editor/Migration/com.ptc.vuforia.engine-11.4.4.tgz
