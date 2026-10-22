@@ -9,6 +9,7 @@ public class MenuInicialManager : MonoBehaviour
     public void onIniciarJuego()
     {
         SceneManager.LoadScene("Juego");
+        print("Hola, prueba!");
     }
 
     public void onSalir()
