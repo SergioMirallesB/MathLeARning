@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,9 +9,6 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("UI")]
-    [SerializeField] private TextMeshProUGUI txtPregunta;
-    [SerializeField] private Slider sliderVidas;
     [SerializeField] private ScreenManager scManager;
 
     [Header("Juego")]
@@ -50,20 +48,22 @@ public class GameManager : MonoBehaviour
         
         int[] listaNumeros = new int[cantidadOperaciones + 1];
 
+
         // Esto guarda los operadores disponibles (en este caso [+,-,*,/])
         Operadores[] valores = (Operadores[])System.Enum.GetValues(typeof(Operadores));
 
-        // Rellenamos todos los operadores y valores numéricos
 
+        // Rellenamos todos los operadores y valores numéricos
         for (int i = 0; i < cantidadOperaciones; i++)
         {
             // Operador aleatorio
-            listaOperadores[i] = valores[Random.Range(0, valores.Length)];
+            listaOperadores[i] = valores[Random.Range(0, valores.Length -2)];
             
             // Numero aleatorio
             listaNumeros[i] = Random.Range(0, 9 * dificultad);
 
         }
+
 
         // Como siempre hay uno más, lo rellenamos luego
         listaNumeros[listaNumeros.Length-1] = Random.Range(0, 9 * dificultad);
@@ -88,60 +88,28 @@ public class GameManager : MonoBehaviour
         digitosRestantes = digitosResultado;
 
 
-        // Montamos la pregunta
-        montarPregunta(listaOperadores, listaNumeros);
-
+        // Montamos la pregunta y
         // Escribimos en pantalla
-        scManager.EscribirOperacion(pregunta);
+        scManager.EscribirOperacion(montarPregunta(listaOperadores, listaNumeros));
 
     }
 
-    /*private void calcularResultado(Operadores[] listaOperadores, int[] listaNumeros)
-    {
-        // De momento no sigue el orden de prioridad (* y /, luego + y -)
-        // TODO (?) si sobra tiempo
-        resultado = listaNumeros[0];
-
-        for (int i = 0; i < listaOperadores.Length; i++)
-        {
-            switch (listaOperadores[i])
-            {
-                case Operadores.Suma:
-                    resultado = resultado + listaNumeros[i + 1];
-
-                    break;
-                case Operadores.Resta:
-                    resultado = resultado - listaNumeros[i + 1];
-
-                    break;
-                case Operadores.Multiplicacion:
-                    resultado = resultado * listaNumeros[i + 1];
-
-                    break;
-            }
-        }
-    }*/
-
-    private void montarPregunta(Operadores[] listaOperadores, int[] listaNumeros)
+    private string montarPregunta(Operadores[] listaOperadores, int[] listaNumeros)
     {
 
-        string textoMotrar = listaNumeros[0] + "";
+        pregunta = listaNumeros[0] + "";
 
         for (int i = 0; i < listaOperadores.Length; i++)
         {
             char operadorActual = (char)listaOperadores[i];
 
-            textoMotrar += " " + operadorActual + " " + listaNumeros[i+1];
+            pregunta += " " + operadorActual + " " + listaNumeros[i+1];
 
         }
 
-        textoMotrar += resultado >= 0 ? " =" : " = -";
+        pregunta += resultado >= 0 ? " =" : " = -";
 
-        pregunta = textoMotrar;
-
-        textoMotrar += string.Concat(Enumerable.Repeat(" _", digitosRestantes));
-
-        txtPregunta.text = textoMotrar;
+        return pregunta + string.Concat(Enumerable.Repeat(" _", digitosRestantes));
 
     }
 
@@ -164,7 +132,7 @@ public class GameManager : MonoBehaviour
 
         textoMostrar += string.Concat(Enumerable.Repeat(" _", digitosRestantes));
 
-        txtPregunta.text = textoMostrar;
+        scManager.EscribirOperacion(textoMostrar);
 
 
         if (digitosRestantes == 0)
@@ -176,15 +144,20 @@ public class GameManager : MonoBehaviour
 
                 if (puntos % 3 == 0) dificultad++;
 
+                StartCoroutine(scManager.Resultado(true));
+
                 nuevaPregunta();
 
             } else
             {
                 vidas--;
 
-                sliderVidas.value = vidas;
+                scManager.ActualizarVidas(vidas);
 
                 if (vidas == 0) finalizarPartida();
+
+
+                StartCoroutine(scManager.Resultado(false));
 
                 nuevaPregunta();
             }
@@ -224,7 +197,7 @@ public class GameManager : MonoBehaviour
 
         }
 
-        txtPregunta.text = textoMostrar;
+        scManager.EscribirOperacion(textoMostrar);
     }
 
     private bool validarRespuesta()

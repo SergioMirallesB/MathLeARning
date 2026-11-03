@@ -33,10 +33,6 @@ public static class Calculadora
                 }
                 else
                 {
-                    if (nums[i + 1] == 0)
-                    {
-                        nums[i + 1] = Random.Range(1, 9);
-                    }
 
                     resultado = nums[i] / nums[i + 1];
                 }
