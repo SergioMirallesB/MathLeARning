@@ -1,9 +1,6 @@
 using System.Linq;
-using System.Threading.Tasks;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 
 
@@ -19,6 +16,10 @@ public class GameManager : MonoBehaviour
     private int respuestaUsuario = 0;
     private static int puntos = 0;
     private int vidas = 3;
+    private float tiempoPregunta = 32f;
+    private float tmpPregRestante = 0f;
+    private float tiempoUpdate = 0.1f;
+    private float tmpUpdateRestante = 0f;
 
     private string pregunta;
 
@@ -30,6 +31,30 @@ public class GameManager : MonoBehaviour
         nuevaPregunta();
     }
 
+    private void Update()
+    {
+
+        tmpPregRestante -= Time.deltaTime;
+
+        tmpUpdateRestante -= Time.deltaTime;
+
+        if (tmpUpdateRestante <= 0)
+        {
+            tmpUpdateRestante = tiempoUpdate;
+
+            scManager.UpdateTimer(tmpPregRestante);
+
+        }
+
+        if (tmpPregRestante <= 0)
+        {
+            Fallar();
+        }
+
+    }
+
+
+
     private void nuevaPregunta()
     {
 
@@ -40,6 +65,7 @@ public class GameManager : MonoBehaviour
 
         digitosResultado = 0;
 
+        tmpPregRestante = tiempoPregunta;
 
         // Variables calculadas
         int cantidadOperaciones = (int)Mathf.Ceil(dificultad/5.0f);
@@ -150,16 +176,9 @@ public class GameManager : MonoBehaviour
 
             } else
             {
-                vidas--;
 
-                scManager.ActualizarVidas(vidas);
+                Fallar();
 
-                if (vidas == 0) finalizarPartida();
-
-
-                StartCoroutine(scManager.Resultado(false));
-
-                nuevaPregunta();
             }
         }
     }
@@ -215,6 +234,21 @@ public class GameManager : MonoBehaviour
     public static int getPuntos()
     {
         return puntos;
+    }
+
+    private void Fallar()
+    {
+
+        vidas--;
+
+        scManager.ActualizarVidas(vidas);
+
+        if (vidas == 0) finalizarPartida();
+
+
+        StartCoroutine(scManager.Resultado(false));
+
+        nuevaPregunta();
     }
 
 }

@@ -7,6 +7,7 @@ public class ScreenManager : MonoBehaviour
 {
     [Header("Elementos UI")]
     [SerializeField] private TextMeshProUGUI txtPregunta;
+    [SerializeField] private TextMeshProUGUI txtTiempo;
     [SerializeField] private TextMeshProUGUI txtBien;
     [SerializeField] private TextMeshProUGUI txtMal;
     [SerializeField] private Slider sliderVidas;
@@ -48,10 +49,17 @@ public class ScreenManager : MonoBehaviour
         pantallaMostrar.enabled = true;
         txt.enabled = true;
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
 
         pantallaMostrar.enabled = false;
         txt.enabled = false;
+
+    }
+
+    public void UpdateTimer(float timeLeft)
+    {
+
+        txtTiempo.text = "" + (Mathf.Round(timeLeft * 100f) / 100f);
 
     }
 }
