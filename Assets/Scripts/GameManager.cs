@@ -7,6 +7,9 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private ScreenManager scManager;
+    [SerializeField] private AudioClip errorAudio;
+    [SerializeField] private AudioClip pointAudio;
+    [SerializeField] private AudioSource audioSrc;
 
     [Header("Juego")]
     private int dificultad = 1;
@@ -22,6 +25,7 @@ public class GameManager : MonoBehaviour
     private float tmpUpdateRestante = 0f;
 
     private string pregunta;
+
 
 
     void Start()
@@ -166,6 +170,8 @@ public class GameManager : MonoBehaviour
             if (validarRespuesta())
             {
 
+                audioSrc.PlayOneShot(pointAudio);
+
                 puntos++;
 
                 if (puntos % 3 == 0) dificultad++;
@@ -238,6 +244,8 @@ public class GameManager : MonoBehaviour
 
     private void Fallar()
     {
+        audioSrc.PlayOneShot(errorAudio);
+
 
         vidas--;
 

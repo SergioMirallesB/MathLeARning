@@ -9,6 +9,7 @@ public class MenuInicialManager : MonoBehaviour
     private void Start()
     {
 
+
         OcultarCanvas();
 
     }
@@ -19,7 +20,6 @@ public class MenuInicialManager : MonoBehaviour
     public void onIniciarJuego()
     {
         SceneManager.LoadScene("Juego");
-        print("Hola, prueba!");
     }
 
     public void OnComoJugar()
@@ -31,7 +31,6 @@ public class MenuInicialManager : MonoBehaviour
 
     public void onSalir()
     {
-        Debug.Log("Salimos");
         Application.Quit();
     }
 
